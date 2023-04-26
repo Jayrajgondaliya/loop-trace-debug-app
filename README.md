@@ -8,10 +8,12 @@ This Sample Spring Boot application is to reproduce trace stitching to wrong con
 ### How to Reproduce ?
 - Here, Start application with Java Agent
 - Use some performance testing tool to generate high load.
-  - Jmeter - 20 threads, 200 Throughput 
-  - Test API : https://localhost:9999/api/greet?name=SomeName&delay=100
+  - Jmeter - 20 threads, 200 Throughput
+  - Setup Envoy to listen to 9440 with HTTPS, route request to 9999
+    - It can not be reproduced with HTTP directly.
+  - Test API : https://localhost:9440/api/greet?name=SomeName&delay=100
 
-**Note: Use HTTPS request (Envoy as proxy and route request to service).**
+**Note: Issue Can not be reproduced with HTTP so, Use HTTPS request (Envoy as proxy and route request to service).**
 
 ### Resulting Error: 
 ![alt text](NormalTrace.png)
@@ -23,7 +25,7 @@ This Sample Spring Boot application is to reproduce trace stitching to wrong con
 1. Only happens after java-agent version - 1.6.2
 2. Only happens with Undertow Server (Tested with Tomcat - Didn't happen).
 3. Only Happens when HTTPS request 
-   - OUR Structure : JMeter --->(HTTPS) Request to --> Envoy --> Authentication APP ---> Test APP
+   - Our Structure : JMeter --->(HTTPS) Request to --> Envoy --> Authentication APP ---> Test APP
 4. It is not happening when
    1. suppress strategy to none
        ```
